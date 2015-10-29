@@ -39,6 +39,8 @@ public:
 
 	void saveToFile();
 
+	Specimen& getBest();
+
 	void writeSpec(int num);
 };
 

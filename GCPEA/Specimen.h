@@ -5,6 +5,7 @@
 #include <ctime>
 #include <set>
 #include <unordered_set>
+#include <numeric>
 
 using namespace std;
 
@@ -17,7 +18,10 @@ private:
 
 	void randomizeGenes();
 	void mutate();
+	void mutate2();
 	bool validColor(int color);
+
+	vector<int> getFilledSet(int middle, int range);
 	int fix(int color);
 	void fix();
 
@@ -30,7 +34,9 @@ public:
 	~Specimen();
 
 	int rate();
-	pair<Specimen*, Specimen*>& cross(Specimen& other);
+	pair<Specimen*, Specimen*>& cross(Specimen & other);
+
+	string toString();
 	
 };
 

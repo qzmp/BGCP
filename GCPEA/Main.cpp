@@ -8,7 +8,7 @@ int main()
 	clock_t beginTime = clock();
 	int maxPops = 100;
 	
-	Population p = Population(100, "GEOM20.col", maxPops, 0.01f, 0.05f, 0.5f);
+	Population p = Population(100, "GEOM20.col", maxPops, 0.01f, 0.1f, 0.7f);
 	int i = 0;
 
 	while (!p.perfected() && i < maxPops)
@@ -23,6 +23,9 @@ int main()
 	}
 
 	cout << "czas kolorowania algorytmem genetycznym:" << float(clock() - beginTime) / CLOCKS_PER_SEC << "\n";
+	cout << "best: " << p.getBest().toString();
 
 	p.saveToFile();
+
+	return 0;
 }

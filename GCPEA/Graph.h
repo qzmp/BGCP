@@ -14,7 +14,9 @@ private:
 	vector<list<pair<int, int>>> neighbours;
 	string name;
 
+	void removeLoops();
 	void removeDuplicateEdges();
+	void duplicateNeighbours();
 
 public:
 	Graph();

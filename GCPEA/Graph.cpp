@@ -9,7 +9,8 @@ Graph::Graph()
 Graph::Graph(string filename)
 {
 	loadFromFile(filename);
-	removeDuplicateEdges();
+	duplicateNeighbours();
+	removeLoops();
 	this->name = filename;
 }
 
@@ -58,6 +59,17 @@ int Graph::loadFromFile(string filename)
 	}
 }
 
+void Graph::removeLoops()
+{
+	for (int i = 0; i < neighbours.size(); i++)
+	{
+		if (neighbours[i].front().first - 1 == i)
+		{
+			neighbours[i].erase(remove(neighbours[i].begin(), neighbours[i].end(), neighbours[i].front()), neighbours[i].end());
+		}
+	}
+}
+
 void Graph::removeDuplicateEdges()
 {
 	for (auto& n : neighbours)
@@ -68,6 +80,21 @@ void Graph::removeDuplicateEdges()
 			
 			node.erase(remove(node.begin(), node.end(), p), node.end());
 		}			
+	}
+}
+
+void Graph::duplicateNeighbours()
+{
+	for (int i = 0; i < neighbours.size(); i++)
+	{
+		for (auto& p : neighbours[i])
+		{
+			auto& node = neighbours[p.first - 1];
+			if (find(node.begin(), node.end(), pair<int, int>(i + 1, p.second)) == node.end())
+			{
+				node.push_back(pair<int, int>(i + 1, p.second));
+			}			
+		}
 	}
 }
 

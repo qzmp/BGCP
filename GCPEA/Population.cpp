@@ -125,6 +125,8 @@ void Population::crossing()
 			children = parent1->cross(*parent2);
 			newPop[i++] = *children.first;
 			newPop[i++] = *children.second;
+			delete children.first;
+			delete children.second;
 		}
 		else
 		{
@@ -144,7 +146,7 @@ void Population::generateNewPopulation()
 void Population::saveToFile()
 {
 	ofstream resultFile;
-	string filename = graph.getName() + " CC#" + to_string(crossingChance) + " TR#" + to_string(tourneyRatio) + " MV#" + to_string(mutationValue) + ".csv";
+	string filename = "results//" + graph.getName() + " CC#" + to_string(crossingChance) + " TR#" + to_string(tourneyRatio) + " MV#" + to_string(mutationValue) + ".csv";
 	resultFile.open(filename);
 	for (list<vector<int>>::iterator it = ratings.begin(); it != ratings.end(); it++)
 	{
@@ -155,4 +157,22 @@ void Population::saveToFile()
 
 	}
 	resultFile.close();
+}
+
+Specimen & Population::getBest()
+{
+	auto& recentRatings = ratings.back();
+	int minRating = recentRatings[0];
+	int bestPos = 0;
+	for (int i = 1; i < recentRatings.size(); i++)
+	{
+		if (recentRatings[i] < minRating)
+		{
+			minRating = recentRatings[i];
+			bestPos = i;
+		}
+	}
+	int test = specimens[bestPos].rate();
+	test = specimens[bestPos].rate();
+	return specimens[bestPos];
 }
