@@ -6,7 +6,7 @@ Specimen::Specimen(Graph * graph, float mutationValue)
 	this->graph = graph;
 	this->mutationValue = mutationValue;
 	randomizeGenes();
-	fix();
+	fixAll();
 }
 
 Specimen::Specimen(Specimen & parent1, Specimen & parent2)
@@ -23,6 +23,7 @@ Specimen::Specimen(Specimen & parent1, Specimen & parent2)
 	{
 		colors[i] = parent2.colors[i];
 	}
+	fixAll();
 	mutate2();
 }
 
@@ -55,24 +56,19 @@ int Specimen::rate()
 {
 	int errorCount = 0;
 
-	set<int> individualColors(colors.begin(), colors.end());
+	int minElement = *min_element(colors.begin(), colors.end());
+	int maxElement = *max_element(colors.begin(), colors.end());
 
-	errorCount = individualColors.size();
-
+	errorCount = maxElement - minElement;
+	
 	for (size_t i = 0; i < colors.size(); i++)
 	{
-		int processedColor = colors[i];
-		list<pair<int, int>> processedNeighbours = graph->getNeighbours(i);
-
-		for (auto& p : processedNeighbours) {
-			int colorDiff = abs(colors[p.first - 1] - processedColor);
-			if (colorDiff < p.second)
-			{
-				errorCount += 2;
-			}
+		if (!isValidColored(i))
+		{
+			errorCount++;
 		}
 	}
-
+	
 	return errorCount;
 }
 
@@ -110,16 +106,16 @@ void Specimen::mutate2()
 	{
 		if (rand() % colors.size() < mutationValue * colors.size())
 		{
-			colors[i] = fix(colors[i]);
+			fillValidColor(i);
 		}
 	}
 }
 
-bool Specimen::validColor(int color)
+bool Specimen::isValidColored(int node)
 {
-	for (auto& n : graph->getNeighbours(color))
+	for (auto& n : graph->getNeighbours(node))
 	{
-		if (abs(colors[n.first - 1] - color) < n.second)
+		if (abs(colors[n.first] - colors[node]) < n.second)
 		{
 			return false;
 		}
@@ -127,50 +123,28 @@ bool Specimen::validColor(int color)
 	return true;
 }
 
-vector<int> Specimen::getFilledSet(int middle, int range)
+void Specimen::fillValidColor(int node)
 {
-	vector<int> result = vector<int>(1 + (2 * range));
-	iota(result.begin(), result.end(), middle - range);
-	return result;
-}
-
-int Specimen::fix(int node)
-{
-	set<int> unavailableColors;
-	vector<int> temporaryColors;
-	for (auto& n : graph->getNeighbours(node))
+	bool colored = false;
+	int color = 0;
+	while (!colored)
 	{
-		temporaryColors = getFilledSet(colors[n.first - 1], n.second - 1);
-		unavailableColors.insert(temporaryColors.begin(), temporaryColors.end());
-	}
-
-	if (unavailableColors.size() >= colors.size())
-	{
-		return (*unavailableColors.rbegin()) + 1;
-	}
-
-	vector<int> availableColors(colors.size() - unavailableColors.size());
-	
-	int fillingColor = 0;
-	int i = 0;
-	while (i < availableColors.size())
-	{
-		if (find(unavailableColors.begin(), unavailableColors.end(), fillingColor) == unavailableColors.end())
+		colors[node] = color;
+		if (isValidColored(node))
 		{
-			availableColors[i++] = fillingColor;
+			colored = true;
 		}
-		fillingColor++;
+		color++;
 	}
-	return availableColors[rand() % availableColors.size()];
 }
 
-void Specimen::fix()
+void Specimen::fixAll()
 {
 	for (int i = 0; i < colors.size(); i++)
 	{
-		if (!validColor(colors[i]))
+		if (!isValidColored(i))
 		{
-			colors[i] = fix(i);
+			fillValidColor(i);
 		}
 	}
 }

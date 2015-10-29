@@ -46,7 +46,7 @@ int Graph::loadFromFile(string filename)
 				fileStream >> vertex1;
 				fileStream >> vertex2;
 				fileStream >> weight;			
-				edges[vertex1 - 1].push_back(pair<int,int>(vertex2, weight));
+				edges[--vertex1].push_back(pair<int,int>(--vertex2, weight));
 			}
 		}
 		fileStream.close();
@@ -63,7 +63,7 @@ void Graph::removeLoops()
 {
 	for (int i = 0; i < neighbours.size(); i++)
 	{
-		if (neighbours[i].front().first - 1 == i)
+		if (neighbours[i].front().first== i)
 		{
 			neighbours[i].erase(remove(neighbours[i].begin(), neighbours[i].end(), neighbours[i].front()), neighbours[i].end());
 		}
@@ -76,7 +76,7 @@ void Graph::removeDuplicateEdges()
 	{
 		for (auto& p : n)
 		{
-			list<pair<int, int>> node = neighbours[p.first - 1];
+			list<pair<int, int>> node = neighbours[p.first];
 			
 			node.erase(remove(node.begin(), node.end(), p), node.end());
 		}			
@@ -89,10 +89,10 @@ void Graph::duplicateNeighbours()
 	{
 		for (auto& p : neighbours[i])
 		{
-			auto& node = neighbours[p.first - 1];
-			if (find(node.begin(), node.end(), pair<int, int>(i + 1, p.second)) == node.end())
+			auto& node = neighbours[p.first];
+			if (find(node.begin(), node.end(), pair<int, int>(i, p.second)) == node.end())
 			{
-				node.push_back(pair<int, int>(i + 1, p.second));
+				node.push_back(pair<int, int>(i, p.second));
 			}			
 		}
 	}

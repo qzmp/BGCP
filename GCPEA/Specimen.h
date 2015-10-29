@@ -6,6 +6,7 @@
 #include <set>
 #include <unordered_set>
 #include <numeric>
+#include <algorithm>
 
 using namespace std;
 
@@ -19,11 +20,10 @@ private:
 	void randomizeGenes();
 	void mutate();
 	void mutate2();
-	bool validColor(int color);
+	bool isValidColored(int node);
 
-	vector<int> getFilledSet(int middle, int range);
-	int fix(int color);
-	void fix();
+	void fillValidColor(int color);
+	void fixAll();
 
 
 public:
