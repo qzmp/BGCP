@@ -22,6 +22,7 @@ private:
 	void mutate2();
 	bool isValidColored(int node);
 
+	vector<int> fillSurroundings(int mid, int range);
 	void fillValidColor(int color);
 	void fixAll();
 

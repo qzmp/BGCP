@@ -123,18 +123,42 @@ bool Specimen::isValidColored(int node)
 	return true;
 }
 
+vector<int> Specimen::fillSurroundings(int mid, int range)
+{
+	vector<int> result = vector<int>(1 + (2 * range));
+	iota(result.begin(), result.end(), mid - range);
+	return result;
+}
+
 void Specimen::fillValidColor(int node)
 {
+	auto& minMaxColors = minmax_element(colors.begin(), colors.end());
+
+	vector<int> availableColors = vector<int>(*minMaxColors.second - *minMaxColors.first);
+	iota(availableColors.begin(), availableColors.end(), *minMaxColors.first);
+	random_shuffle(availableColors.begin(), availableColors.end());
+
 	bool colored = false;
-	int color = 0;
-	while (!colored)
+	int i = 0;
+	while (!colored && i < availableColors.size())
 	{
-		colors[node] = color;
+		colors[node] = availableColors[i];
 		if (isValidColored(node))
 		{
 			colored = true;
 		}
-		color++;
+		i++;
+	}
+
+	int newMax = *minMaxColors.second + 1;
+	while (!colored)
+	{
+		colors[node] = newMax;
+		if (isValidColored(node))
+		{
+			colored = true;
+		}
+		newMax++;
 	}
 }
 
