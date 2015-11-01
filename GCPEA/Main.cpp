@@ -8,7 +8,7 @@ int main()
 	clock_t beginTime = clock();
 	int maxPops = 1000;
 	
-	Population p = Population(100, "GEOM30a.col", maxPops, 0.3f, 0.1f, 0.7f);
+	Population p = Population(100, "GEOM100.col", maxPops, 0.05f, 0.1f, 0.7f);
 	int i = 0;
 
 	while (!p.perfected() && i < maxPops)

@@ -139,15 +139,18 @@ void Specimen::fillValidColor(int node)
 	random_shuffle(availableColors.begin(), availableColors.end());
 
 	bool colored = false;
-	int i = 0;
-	while (!colored && i < availableColors.size())
+	if (rand() % 100 > 10)
 	{
-		colors[node] = availableColors[i];
-		if (isValidColored(node))
+		int i = 0;
+		while (!colored && i < availableColors.size())
 		{
-			colored = true;
+			colors[node] = availableColors[i];
+			if (isValidColored(node))
+			{
+				colored = true;
+			}
+			i++;
 		}
-		i++;
 	}
 
 	int newMax = *minMaxColors.second + 1;
