@@ -6,7 +6,7 @@ int main()
 
 
 	clock_t beginTime = clock();
-	int maxPops = 1000;
+	int maxPops = 2000;
 	
 	Population p = Population(100, "GEOM100.col", maxPops, 0.05f, 0.1f, 0.7f);
 	int i = 0;

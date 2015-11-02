@@ -6,7 +6,6 @@ Specimen::Specimen(Graph * graph, float mutationValue)
 	this->graph = graph;
 	this->mutationValue = mutationValue;
 	randomizeGenes();
-	fixAll();
 }
 
 Specimen::Specimen(Specimen & parent1, Specimen & parent2)
@@ -23,8 +22,7 @@ Specimen::Specimen(Specimen & parent1, Specimen & parent2)
 	{
 		colors[i] = parent2.colors[i];
 	}
-	fixAll();
-	mutate2();
+	mutate();
 }
 
 Specimen::Specimen(Specimen & other)
@@ -32,7 +30,7 @@ Specimen::Specimen(Specimen & other)
 	this->graph = other.graph;
 	this->mutationValue = other.mutationValue;
 	this->colors = other.colors;
-	mutate2();
+	mutate();
 }
 
 Specimen::Specimen()
@@ -65,7 +63,7 @@ int Specimen::rate()
 	{
 		if (!isValidColored(i))
 		{
-			errorCount++;
+			errorCount += 5;
 		}
 	}
 	
@@ -95,7 +93,7 @@ void Specimen::mutate()
 	for (size_t i = 0; i < colors.size(); i++) {
 		if (rand() % colors.size() < mutationValue * colors.size())
 		{
-			colors[i] = rand() % graph->getNodeCount();
+			colors[i] = rand() % (graph->getNodeCount() + 20);
 		}
 	}
 }
