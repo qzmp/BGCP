@@ -1,10 +1,11 @@
 #include "Specimen.h"
 
 
-Specimen::Specimen(Graph * graph, float mutationValue)
+Specimen::Specimen(Graph * graph, float mutationValue, double ratingFunc(int colorCount, int errorCount))
 {
 	this->graph = graph;
 	this->mutationValue = mutationValue;
+	this->getRating = ratingFunc;
 	randomizeGenes();
 }
 
@@ -12,6 +13,7 @@ Specimen::Specimen(Specimen & parent1, Specimen & parent2)
 {
 	this->graph = parent1.graph;
 	this->mutationValue = parent1.mutationValue;
+	this->getRating = parent1.getRating;
 	colors = vector<int>(graph->getNodeCount());
 	int cutPosition = (rand() % colors.size() / 2) + (colors.size() / 5);
 	for (int i = 0; i < cutPosition; i++) 
@@ -52,22 +54,36 @@ Specimen::~Specimen()
 
 int Specimen::rate()
 {
-	int errorCount = 0;
+	int colorCount;
 
 	int minElement = *min_element(colors.begin(), colors.end());
 	int maxElement = *max_element(colors.begin(), colors.end());
 
-	errorCount = maxElement - minElement;
+	colorCount = maxElement - minElement;
 	
+	int errorCount = 0;
 	for (size_t i = 0; i < colors.size(); i++)
 	{
 		if (!isValidColored(i))
 		{
-			errorCount += 5;
+			errorCount++;
 		}
 	}
 	
 	return errorCount;
+}
+
+int Specimen::rateFenotype()
+{
+	vector<int> genotypeColors = colors;
+	
+	fixAll();
+
+	int rating = rate();
+
+	colors = genotypeColors;
+
+	return rating;
 }
 
 pair<Specimen*, Specimen*>& Specimen::cross(Specimen & other)
@@ -137,8 +153,8 @@ void Specimen::fillValidColor(int node)
 	random_shuffle(availableColors.begin(), availableColors.end());
 
 	bool colored = false;
-	if (rand() % 100 > 10)
-	{
+	//if (rand() % 100 > 10)
+	//{
 		int i = 0;
 		while (!colored && i < availableColors.size())
 		{
@@ -149,7 +165,7 @@ void Specimen::fillValidColor(int node)
 			}
 			i++;
 		}
-	}
+	//}
 
 	int newMax = *minMaxColors.second + 1;
 	while (!colored)

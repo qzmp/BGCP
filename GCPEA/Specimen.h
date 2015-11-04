@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <numeric>
 #include <algorithm>
+#include <functional>
 
 using namespace std;
 
@@ -26,15 +27,17 @@ private:
 	void fillValidColor(int color);
 	void fixAll();
 
+	function <double(int, int)> getRating;
 
 public:
-	Specimen(Graph* graph, float mutationValue);
+	Specimen(Graph* graph, float mutationValue, double ratingFunc(int colorCount, int errorCount));
 	Specimen(Specimen & parent1, Specimen & parent2);
 	Specimen(Specimen & other);
 	Specimen();
 	~Specimen();
 
 	int rate();
+	int rateFenotype();
 	pair<Specimen*, Specimen*>& cross(Specimen & other);
 
 	string toString();

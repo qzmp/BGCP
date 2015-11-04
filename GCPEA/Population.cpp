@@ -1,6 +1,6 @@
 #include "Population.h"
 
-Population::Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance)
+Population::Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance, double ratingFunc(int colorCount, int errorCount))
 {
 	srand(time(NULL));
 	this->specimens = vector<Specimen>(size);
@@ -11,7 +11,7 @@ Population::Population(int size, string filename, int maxPops, float mutationVal
 
 	for (int i = 0; i < size; i++)
 	{
-		specimens[i] = Specimen(&graph, mutationValue);
+		specimens[i] = Specimen(&graph, mutationValue, ratingFunc);
 	}
 
 	this->rateAll();
@@ -30,7 +30,7 @@ void Population::rateAll()
 {
 	vector<int> newRatings = vector<int>(specimens.size());
 	for (size_t i = 0; i < this->specimens.size(); i++) {
-		newRatings[i] = specimens[i].rate();
+		newRatings[i] = specimens[i].rateFenotype();
 	}
 	ratings.push_back(newRatings);
 }
@@ -172,7 +172,7 @@ Specimen & Population::getBest()
 			bestPos = i;
 		}
 	}
-	int test = specimens[bestPos].rate();
-	test = specimens[bestPos].rate();
+	int test = specimens[bestPos].rateFenotype();
+ 	test = specimens[bestPos].rateFenotype();
 	return specimens[bestPos];
 }

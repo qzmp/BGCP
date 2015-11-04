@@ -23,7 +23,7 @@ private:
 	void crossing();
 
 public:
-	Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance);
+	Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance, double ratingFunc(int colorCount, int errorCount));
 	~Population();
 
 	int getRating(int specimenNum);
