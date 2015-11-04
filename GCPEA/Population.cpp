@@ -173,6 +173,30 @@ Specimen & Population::getBest()
 		}
 	}
 	int test = specimens[bestPos].rateFenotype();
- 	test = specimens[bestPos].rateFenotype();
 	return specimens[bestPos];
+}
+
+Graph & Population::getGraph()
+{
+	return graph;
+}
+
+int Population::getSize()
+{
+	return specimens.size();
+}
+
+float Population::getMutationValue()
+{
+	return mutationValue;
+}
+
+float Population::getCrossingChance()
+{
+	return crossingChance;
+}
+
+float Population::getTourneyRatio()
+{
+	return tourneyRatio;
 }

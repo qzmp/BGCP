@@ -41,6 +41,9 @@ public:
 	pair<Specimen*, Specimen*>& cross(Specimen & other);
 
 	string toString();
+
+	int getColorCount();
+	int getErrorCount();
 	
 };
 

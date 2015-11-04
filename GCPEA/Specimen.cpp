@@ -54,23 +54,11 @@ Specimen::~Specimen()
 
 int Specimen::rate()
 {
-	int colorCount;
-
-	int minElement = *min_element(colors.begin(), colors.end());
-	int maxElement = *max_element(colors.begin(), colors.end());
-
-	colorCount = maxElement - minElement;
+	int colorCount = getColorCount();
 	
-	int errorCount = 0;
-	for (size_t i = 0; i < colors.size(); i++)
-	{
-		if (!isValidColored(i))
-		{
-			errorCount++;
-		}
-	}
+	int errorCount = getErrorCount();
 	
-	return errorCount;
+	return getRating(colorCount, errorCount);
 }
 
 int Specimen::rateFenotype()
@@ -188,4 +176,26 @@ void Specimen::fixAll()
 			fillValidColor(i);
 		}
 	}
+}
+
+int Specimen::getColorCount()
+{
+	int minElement = *min_element(colors.begin(), colors.end());
+	int maxElement = *max_element(colors.begin(), colors.end());
+
+	return maxElement - minElement;
+}
+
+int Specimen::getErrorCount()
+{
+	int errorCount = 0;
+	for (size_t i = 0; i < colors.size(); i++)
+	{
+		if (!isValidColored(i))
+		{
+			errorCount++;
+		}
+	}
+
+	return errorCount;
 }
