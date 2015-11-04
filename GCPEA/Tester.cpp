@@ -13,9 +13,44 @@ Tester::Tester()
 
 Tester::Tester(pair<int, int> generations, pair<int, int> size, pair<double, double> mutationValues, pair<double, double> crossingChances, pair<double, double> tourneyRatios)
 {
+	this->generations = generations;
+	this->size = size;
+	this->mutationValues = mutationValues;
+	this->crossingChances = crossingChances;
+	this->tourneyRatios = tourneyRatios;
 }
 
 
 Tester::~Tester()
 {
+}
+
+void Tester::setGenerationBounds(int min, int max, int step)
+{
+	generations = pair<int, int>(min, max);
+	genStep = step;
+}
+
+void Tester::setSizeBounds(int min, int max, int step)
+{
+	size = pair<int, int>(min, max);
+	sizeStep = step;
+}
+
+void Tester::setMutationBounds(double min, double max, double step)
+{
+	mutationValues = pair<double, double>(min, max);
+	mutStep = step;
+}
+
+void Tester::setCrossingBounds(double min, double max, double step)
+{
+	crossingChances = pair<double, double>(min, max);
+	crossStep = step;
+}
+
+void Tester::setTourneyBounds(double min, double max, double step)
+{
+	tourneyRatios = pair<double, double>(min, max);
+	tourneyStep = step;
 }
