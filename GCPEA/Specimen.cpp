@@ -1,11 +1,12 @@
 #include "Specimen.h"
 
 
-Specimen::Specimen(Graph * graph, float mutationValue, double ratingFunc(int colorCount, int errorCount))
+Specimen::Specimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier)
 {
 	this->graph = graph;
 	this->mutationValue = mutationValue;
-	this->getRating = ratingFunc;
+	this->errorMultiplier = errorMultiplier;
+	this->colorMultiplier = colorMultiplier;
 	randomizeGenes();
 }
 
@@ -13,7 +14,8 @@ Specimen::Specimen(Specimen & parent1, Specimen & parent2)
 {
 	this->graph = parent1.graph;
 	this->mutationValue = parent1.mutationValue;
-	this->getRating = parent1.getRating;
+	this->errorMultiplier = parent1.errorMultiplier;
+	this->colorMultiplier = parent1.colorMultiplier;
 	colors = vector<int>(graph->getNodeCount());
 	int cutPosition = (rand() % colors.size() / 2) + (colors.size() / 5);
 	for (int i = 0; i < cutPosition; i++) 
@@ -32,6 +34,8 @@ Specimen::Specimen(Specimen & other)
 	this->graph = other.graph;
 	this->mutationValue = other.mutationValue;
 	this->colors = other.colors;
+	this->errorMultiplier = other.errorMultiplier;
+	this->colorMultiplier = other.colorMultiplier;
 	mutate();
 }
 
@@ -58,7 +62,7 @@ int Specimen::rate()
 	
 	int errorCount = getErrorCount();
 	
-	return getRating(colorCount, errorCount);
+	return colorMultiplier * colorCount * errorCount + errorMultiplier * errorCount * errorCount;
 }
 
 int Specimen::rateFenotype()
@@ -97,7 +101,7 @@ void Specimen::mutate()
 	for (size_t i = 0; i < colors.size(); i++) {
 		if (rand() % colors.size() < mutationValue * colors.size())
 		{
-			colors[i] = rand() % (graph->getNodeCount() + 20);
+			colors[i] = rand() % (graph->getNodeCount());
 		}
 	}
 }

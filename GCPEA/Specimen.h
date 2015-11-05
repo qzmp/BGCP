@@ -27,10 +27,11 @@ private:
 	void fillValidColor(int color);
 	void fixAll();
 
-	function <double(int, int)> getRating;
+	int errorMultiplier;
+	int colorMultiplier;
 
 public:
-	Specimen(Graph* graph, float mutationValue, double ratingFunc(int colorCount, int errorCount));
+	Specimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier);
 	Specimen(Specimen & parent1, Specimen & parent2);
 	Specimen(Specimen & other);
 	Specimen();
@@ -39,6 +40,7 @@ public:
 	int rate();
 	int rateFenotype();
 	pair<Specimen*, Specimen*>& cross(Specimen & other);
+	Specimen* smartCross(Specimen & other);
 
 	string toString();
 

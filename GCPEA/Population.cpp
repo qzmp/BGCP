@@ -1,24 +1,43 @@
 #include "Population.h"
 
-Population::Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance, double ratingFunc(int colorCount, int errorCount))
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int errorMultiplier, int colorMultiplier)
 {
-	srand(time(NULL));
 	this->specimens = vector<Specimen>(size);
 	this->graph = Graph(filename);
 	this->mutationValue = mutationValue;
 	this->tourneyRatio = tourneyRatio;
 	this->crossingChance = crossingChance;
+	this->errorMultiplier = errorMultiplier;
+	this->colorMultiplier = colorMultiplier;
 
 	for (int i = 0; i < size; i++)
 	{
-		specimens[i] = Specimen(&graph, mutationValue, ratingFunc);
+		specimens[i] = Specimen(&graph, mutationValue, errorMultiplier, colorMultiplier);
 	}
 
 	this->rateAll();
 }
 
+Population::Population()
+{
+}
+
+
 Population::~Population()
 {
+}
+
+void Population::reset()
+{
+	this->specimens = vector<Specimen>(specimens.size());
+	this->ratings = list<vector<int>>(ratings.size());
+
+	for (int i = 0; i < specimens.size(); i++)
+	{
+		specimens[i] = Specimen(&graph, mutationValue, errorMultiplier, colorMultiplier);
+	}
+
+	this->rateAll();
 }
 
 int Population::getRating(int specimenNum)
@@ -30,7 +49,7 @@ void Population::rateAll()
 {
 	vector<int> newRatings = vector<int>(specimens.size());
 	for (size_t i = 0; i < this->specimens.size(); i++) {
-		newRatings[i] = specimens[i].rateFenotype();
+		newRatings[i] = specimens[i].rate();
 	}
 	ratings.push_back(newRatings);
 }
@@ -172,7 +191,7 @@ Specimen & Population::getBest()
 			bestPos = i;
 		}
 	}
-	int test = specimens[bestPos].rateFenotype();
+	int test = specimens[bestPos].rate();
 	return specimens[bestPos];
 }
 
@@ -199,4 +218,14 @@ float Population::getCrossingChance()
 float Population::getTourneyRatio()
 {
 	return tourneyRatio;
+}
+
+int Population::getErrorMultiplier()
+{
+	return errorMultiplier;
+}
+
+int Population::getColorMultiplier()
+{
+	return colorMultiplier;
 }

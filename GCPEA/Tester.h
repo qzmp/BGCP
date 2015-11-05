@@ -17,6 +17,9 @@ private:
 	double tourneyStep;
 	function<double(int, int)> ratingFunc;
 
+	double countMean(vector<int> values);
+	double countDeviation(vector<int> values, double mean);
+
 public:
 	Tester();
 	Tester(pair<int, int> generations, pair<int, int> size, pair<double, double> mutationValues, pair<double, double> crossingChances, pair<double, double> tourneyRatios);
@@ -30,6 +33,8 @@ public:
 
 	void testRatingFunction(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance);
 	void test(Population& pop, int genSize, int count);
+
+	void save(Population& pop, int genSize, double avgColorCount, double colorDeviation, double avgErrorCount, double errorDeviation);
 
 };
 

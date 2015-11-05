@@ -22,9 +22,15 @@ private:
 
 	void crossing();
 
+	int errorMultiplier;
+	int colorMultiplier;
+
 public:
-	Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance, double ratingFunc(int colorCount, int errorCount));
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int errorMultiplier, int colorMultiplier);
+	Population();
 	~Population();
+
+	void reset();
 
 	int getRating(int specimenNum);
 	void rateAll();
@@ -42,5 +48,13 @@ public:
 	Specimen& getBest();
 
 	void writeSpec(int num);
+
+	Graph& getGraph();
+	int getSize();
+	float getMutationValue();
+	float getCrossingChance();
+	float getTourneyRatio();
+	int getErrorMultiplier();
+	int getColorMultiplier();
 };
 

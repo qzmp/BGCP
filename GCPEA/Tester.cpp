@@ -9,7 +9,7 @@ double Tester::countMean(vector<int> values)
 	{
 		sum += v;
 	}
-	return sum / values.size();
+	return (double)sum / (double)values.size();
 }
 
 double Tester::countDeviation(vector<int> values, double mean)
@@ -17,10 +17,9 @@ double Tester::countDeviation(vector<int> values, double mean)
 	int sum = 0;
 	for (int v : values)
 	{
-		sum += v - mean;
+		sum += (v - mean) * (v - mean);
 	}
-
-	return sqrt(sum / values.size());
+	return sqrt((double)sum / (double)values.size());
 }
 
 Tester::Tester()
@@ -76,19 +75,25 @@ void Tester::setTourneyBounds(double min, double max, double step)
 	tourneyStep = step;
 }
 
-void Tester::testRatingFunction(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance)
+void Tester::testRatingFunction(int size, string filename, int maxGens, float mutationValue, float tourneyRatio, float crossingChance)
 {
-	double colorCountMultiplierMin = 0.1;
-	double colorCountMultiplierMax = 10;
-	double colorCountMultiplierStep = 0.1;
+	int colorCountMultiplierMin = 1;
+	int colorCountMultiplierMax = 1;
+	int colorCountMultiplierStep = 1;
 
-	double errorCountMultiplierMin = 0.1;
-	double errorCountMultiplierMax = 10;
-	double errorCountMultiplierStep = 0.1;
+	int errorCountMultiplierMin = 1;
+	int errorCountMultiplierMax = 1;
+	int errorCountMultiplierStep = 1;
 
-	for (int i = colorCountMultiplierMin; i < colorCountMultiplierMax; i += colorCountMultiplierStep)
+	Population* testedPop = new Population();
+	for (int i = colorCountMultiplierMin; i <= colorCountMultiplierMax; i += colorCountMultiplierStep)
 	{
-
+		for (int j = errorCountMultiplierMin; j <= errorCountMultiplierMax; j += errorCountMultiplierStep)
+		{
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j);
+			test(*testedPop, maxGens, 10);
+		}
+		delete testedPop;
 	}
 }
 
@@ -109,6 +114,7 @@ void Tester::test(Population & pop, int genSize, int count)
 		bestSpec = pop.getBest();
 		bestColorCounts[i] = bestSpec.getColorCount();
 		bestErrorCounts[i] = bestSpec.getErrorCount();
+		pop.reset();
 	}
 
 	double avgColorCount = countMean(bestColorCounts);
@@ -116,23 +122,22 @@ void Tester::test(Population & pop, int genSize, int count)
 	double avgErrorCount = countMean(bestErrorCounts);
 	double errorDeviation = countDeviation(bestErrorCounts, avgErrorCount);
 
-	save(pop, count, avgColorCount, colorDeviation, avgErrorCount, errorDeviation);
+	save(pop, genSize, avgColorCount, colorDeviation, avgErrorCount, errorDeviation);
 }
 
 void Tester::save(Population & pop, int genSize, double avgColorCount, double colorDeviation, double avgErrorCount, double errorDeviation)
 {
 	ofstream resultFile;
 	string filename = "results//" + pop.getGraph().getName() + ".csv";
-	resultFile.open(filename, ios::ate);
-	string line = pop.getSize() + " | " + genSize + " | " + pop.getCrossingChance() + " | " + 
-	resultFile << pop
-	for (list<vector<int>>::iterator it = ratings.begin(); it != ratings.end(); it++)
-	{
-		vector<int> processedRatings = *it;
-		resultFile << worstGrade(processedRatings) << ";";
-		resultFile << averageGrade(processedRatings) << ";";
-		resultFile << bestGrade(processedRatings) << "\n";
-
-	}
+	resultFile.imbue(locale("fr"));
+	resultFile.open(filename, ios::ate | ios::app);
+	string line = to_string(pop.getSize()) + ";" + to_string(genSize) + ";" + to_string(pop.getCrossingChance()) + ";" + to_string(pop.getMutationValue()) + ";" + to_string(pop.getTourneyRatio()) + ";";
+	resultFile << line;
+	resultFile << pop.getColorMultiplier() << ";";
+	resultFile << pop.getErrorMultiplier() << ";";
+	resultFile << avgColorCount << ";";
+	resultFile << colorDeviation << ";";
+	resultFile << avgErrorCount << ";";
+	resultFile << errorDeviation << "\n";
 	resultFile.close();
 }
