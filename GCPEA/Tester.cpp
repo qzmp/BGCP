@@ -81,8 +81,8 @@ void Tester::testRatingFunction(int size, string filename, int maxGens, float mu
 	int colorCountMultiplierMax = 1;
 	int colorCountMultiplierStep = 1;
 
-	int errorCountMultiplierMin = 1;
-	int errorCountMultiplierMax = 1;
+	int errorCountMultiplierMin = 20;
+	int errorCountMultiplierMax = 20;
 	int errorCountMultiplierStep = 1;
 
 	Population* testedPop = new Population();

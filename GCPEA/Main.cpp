@@ -29,7 +29,7 @@ int main()
 	*/
 	
 	Tester t;
-	t.testRatingFunction(100, "GEOM20.col", 1000, 0.05f, 0.05f, 0.7f);
+	t.testRatingFunction(100, "GEOM20.col", 10000, 0.05f, 0.05f, 0.7f);
 	
 	return 0;
 	

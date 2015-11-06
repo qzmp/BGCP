@@ -22,6 +22,7 @@ private:
 	void mutate();
 	void mutate2();
 	bool isValidColored(int node);
+	int rateNode(int node);
 
 	vector<int> fillSurroundings(int mid, int range);
 	void fillValidColor(int color);
@@ -39,8 +40,7 @@ public:
 
 	int rate();
 	int rateFenotype();
-	pair<Specimen*, Specimen*>& cross(Specimen & other);
-	Specimen* smartCross(Specimen & other);
+	Specimen & cross(Specimen & other);
 
 	string toString();
 

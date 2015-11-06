@@ -17,16 +17,18 @@ Specimen::Specimen(Specimen & parent1, Specimen & parent2)
 	this->errorMultiplier = parent1.errorMultiplier;
 	this->colorMultiplier = parent1.colorMultiplier;
 	colors = vector<int>(graph->getNodeCount());
-	int cutPosition = (rand() % colors.size() / 2) + (colors.size() / 5);
-	for (int i = 0; i < cutPosition; i++) 
+
+	for (int i = 0; i < colors.size(); i++)
 	{
-		colors[i] = parent1.colors[i];
+		if (parent1.rateNode(i) < parent2.rateNode(i))
+		{
+			colors[i] = parent1.colors[i];
+		}
+		else
+		{
+			colors[i] = parent2.colors[i];
+		}
 	}
-	for (int i = cutPosition; i < colors.size(); i++)
-	{
-		colors[i] = parent2.colors[i];
-	}
-	mutate();
 }
 
 Specimen::Specimen(Specimen & other)
@@ -62,7 +64,7 @@ int Specimen::rate()
 	
 	int errorCount = getErrorCount();
 	
-	return colorMultiplier * colorCount * errorCount + errorMultiplier * errorCount * errorCount;
+	return colorMultiplier * colorCount + errorMultiplier * errorCount;
 }
 
 int Specimen::rateFenotype()
@@ -78,12 +80,9 @@ int Specimen::rateFenotype()
 	return rating;
 }
 
-pair<Specimen*, Specimen*>& Specimen::cross(Specimen & other)
+Specimen & Specimen::cross(Specimen & other)
 {
-	Specimen* child1 = new Specimen(*this, other);
-	Specimen* child2 = new Specimen(other, *this);
-
-	return pair<Specimen*, Specimen*>(child1, child2);
+	return Specimen(*this, other);
 }
 
 string Specimen::toString()
@@ -127,6 +126,19 @@ bool Specimen::isValidColored(int node)
 		}
 	}
 	return true;
+}
+
+int Specimen::rateNode(int node)
+{
+	int rating = 0;
+	for (auto& n : graph->getNeighbours(node))
+	{
+		if (abs(colors[n.first] - colors[node]) < n.second)
+		{
+			rating++;
+		}
+	}
+	return rating;
 }
 
 vector<int> Specimen::fillSurroundings(int mid, int range)

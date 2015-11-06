@@ -130,7 +130,6 @@ void Population::crossing()
 {
 	vector<Specimen> newPop = vector<Specimen>(specimens.size());
 	Specimen *parent1, *parent2;
-	pair<Specimen*, Specimen*> children;
 	int tourneySize = tourneyRatio * specimens.size();
 
 	size_t i = 0;
@@ -141,16 +140,11 @@ void Population::crossing()
 
 		if (rand() % specimens.size() < crossingChance * specimens.size())
 		{
-			children = parent1->cross(*parent2);
-			newPop[i++] = *children.first;
-			newPop[i++] = *children.second;
-			delete children.first;
-			delete children.second;
+			newPop[i++] = Specimen(*parent1, *parent2);
 		}
 		else
 		{
 			newPop[i++] = Specimen(*parent1);
-			newPop[i++] = Specimen(*parent2);
 		}
 	}
 	specimens = newPop;
