@@ -20,32 +20,27 @@ private:
 
 	void randomizeGenes();
 	void mutate();
-	void mutate2();
+	
 	bool isValidColored(int node);
 	int rateNode(int node);
-
-	vector<int> fillSurroundings(int mid, int range);
-	void fillValidColor(int color);
-	void fixAll();
-
+	
 	int errorMultiplier;
 	int colorMultiplier;
 
 public:
-	Specimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier);
-	Specimen(Specimen & parent1, Specimen & parent2);
+	Specimen(Graph* graph, int errorMultiplier, int colorMultiplier, float mutationValue);
 	Specimen(Specimen & other);
 	Specimen();
 	~Specimen();
 
-	int rate();
-	int rateFenotype();
-	Specimen & cross(Specimen & other);
-
-	string toString();
-
-	int getColorCount();
-	int getErrorCount();
+	virtual int rate() = 0;
 	
+	virtual Specimen & cross1(Specimen & other);
+	virtual pair<Specimen*, Specimen*> & cross2(Specimen & other);
+
+	virtual string toString();
+
+	virtual int getColorCount();
+	virtual int getErrorCount();
 };
 
