@@ -14,12 +14,12 @@ double Tester::countMean(vector<int> values)
 
 double Tester::countDeviation(vector<int> values, double mean)
 {
-	int sum = 0;
+	double sum = 0;
 	for (int v : values)
 	{
 		sum += (v - mean) * (v - mean);
 	}
-	return sqrt((double)sum / (double)values.size());
+	return sqrt(sum / (double)values.size());
 }
 
 Tester::Tester()
@@ -90,7 +90,7 @@ void Tester::testRatingFunction(int size, string filename, int maxGens, float mu
 	{
 		for (int j = errorCountMultiplierMin; j <= errorCountMultiplierMax; j += errorCountMultiplierStep)
 		{
-			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j);
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, 0);
 			test(*testedPop, maxGens, 10);
 		}
 		delete testedPop;
@@ -102,7 +102,7 @@ void Tester::test(Population & pop, int genSize, int count)
 	vector<int> bestColorCounts = vector<int>(count);
 	vector<int> bestErrorCounts = vector<int>(count);
 
-	Specimen bestSpec;;
+	Specimen* bestSpec;;
 
 	for (int i = 0; i < count; i++)
 	{
@@ -111,9 +111,9 @@ void Tester::test(Population & pop, int genSize, int count)
 			pop.generateNewPopulation();
 		}
 
-		bestSpec = pop.getBest();
-		bestColorCounts[i] = bestSpec.getColorCount();
-		bestErrorCounts[i] = bestSpec.getErrorCount();
+		bestSpec = &pop.getBest();
+		bestColorCounts[i] = bestSpec->getColorCount();
+		bestErrorCounts[i] = bestSpec->getErrorCount();
 		pop.reset();
 	}
 

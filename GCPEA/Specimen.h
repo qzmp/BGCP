@@ -8,39 +8,36 @@
 #include <numeric>
 #include <algorithm>
 #include <functional>
+#include <memory>
 
 using namespace std;
 
 class Specimen
 {
-private:
+protected:
 	vector<int> colors;
 	Graph* graph;
 	float mutationValue;
 
 	void randomizeGenes();
-	void mutate();
+	virtual void mutate() = 0;
 	
 	bool isValidColored(int node);
 	int rateNode(int node);
-	
-	int errorMultiplier;
-	int colorMultiplier;
 
 public:
-	Specimen(Graph* graph, int errorMultiplier, int colorMultiplier, float mutationValue);
-	Specimen(Specimen & other);
+	Specimen(Graph* graph, float mutationValue);
+	Specimen(Graph* graph, float mutationValue, vector<int> & colors);
 	Specimen();
 	~Specimen();
 
 	virtual int rate() = 0;
+	virtual vector<shared_ptr<Specimen>> cross(shared_ptr<Specimen> & other, float chance) = 0;
 	
-	virtual Specimen & cross1(Specimen & other);
-	virtual pair<Specimen*, Specimen*> & cross2(Specimen & other);
+	string toString();
+	vector<int>& getColors();
 
-	virtual string toString();
-
-	virtual int getColorCount();
-	virtual int getErrorCount();
+	int getColorCount();
+	int getErrorCount();
 };
 

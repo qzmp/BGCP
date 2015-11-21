@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Graph.h"
-#include "Specimen.h"
+#include "PenaltyStrategySpecimen.h"
+#include "LegalSpecimen.h"
+#include <memory>
 
 class Population
 {
 private:
-	vector<Specimen> specimens;
+	vector<shared_ptr<Specimen>> specimens;
 	Graph graph;
 	int colorNumber;
 	list<vector<int>> ratings;
@@ -14,11 +16,13 @@ private:
 	float tourneyRatio;
 	float crossingChance;
 
-	Specimen & tourney(vector<int>& tourneyGroup);
+	int specimenType;
+
+	shared_ptr<Specimen> & tourney(vector<int>& tourneyGroup);
 
 	Specimen & randomSpec();
 
-	Specimen & select(int tourneySize);
+	shared_ptr<Specimen>& select(int tourneySize);
 
 	void crossing();
 
@@ -26,7 +30,7 @@ private:
 	int colorMultiplier;
 
 public:
-	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int errorMultiplier, int colorMultiplier);
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int errorMultiplier, int colorMultiplier, int specimenType);
 	Population();
 	~Population();
 

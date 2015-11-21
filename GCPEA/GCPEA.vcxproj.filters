@@ -13,19 +13,31 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Specimen">
+      <UniqueIdentifier>{a0cc144b-b9e0-4621-a62a-33285af6f4ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Specimen">
+      <UniqueIdentifier>{8344c385-a4e7-4231-8c7b-3a4ccddec718}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Population.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Specimen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tester.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Specimen.h">
+      <Filter>Header Files\Specimen</Filter>
+    </ClInclude>
+    <ClInclude Include="PenaltyStrategySpecimen.h">
+      <Filter>Header Files\Specimen</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LegalSpecimen.h">
+      <Filter>Header Files\Specimen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -35,14 +47,20 @@
     <ClCompile Include="Population.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Specimen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tester.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Specimen.cpp">
+      <Filter>Source Files\Specimen</Filter>
+    </ClCompile>
+    <ClCompile Include="PenaltyStrategySpecimen.cpp">
+      <Filter>Source Files\Specimen</Filter>
+    </ClCompile>
+    <ClCompile Include="LegalSpecimen.cpp">
+      <Filter>Source Files\Specimen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
