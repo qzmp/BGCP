@@ -1,14 +1,14 @@
-#include "Population.h"
+#include "Tester.h"
 #include <iostream>
 
 int main()
 {
-
-
+	srand(time(NULL));
+	
 	clock_t beginTime = clock();
 	int maxPops = 1000;
 	
-	Population p = Population(100, "GEOM30a.col", maxPops, 0.3f, 0.1f, 0.7f);
+	Population p = Population(100, "GEOM20.col", 0.05f, 0.05f, 0.7f, 1, 1, 1);
 	int i = 0;
 
 	while (!p.perfected() && i < maxPops)
@@ -26,6 +26,11 @@ int main()
 	cout << "best: " << p.getBest().toString();
 
 	p.saveToFile();
-
+	
+	/*
+	Tester t;
+	t.testRatingFunction(100, "GEOM20.col", 10000, 0.05f, 0.05f, 0.7f);
+	*/
 	return 0;
+	
 }

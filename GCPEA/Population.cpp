@@ -1,24 +1,68 @@
 #include "Population.h"
 
-Population::Population(int size, string filename, int maxPops, float mutationValue, float tourneyRatio, float crossingChance)
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance,
+	int errorMultiplier, int colorMultiplier, int specimenType)
 {
-	srand(time(NULL));
-	this->specimens = vector<Specimen>(size);
+	this->specimens = vector<shared_ptr<Specimen>>(size);
 	this->graph = Graph(filename);
 	this->mutationValue = mutationValue;
 	this->tourneyRatio = tourneyRatio;
 	this->crossingChance = crossingChance;
+	this->errorMultiplier = errorMultiplier;
+	this->colorMultiplier = colorMultiplier;
+	this->specimenType = specimenType;
 
 	for (int i = 0; i < size; i++)
 	{
-		specimens[i] = Specimen(&graph, mutationValue);
+		switch(specimenType)
+		{
+		case 0: 
+		{
+			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));
+			break;
+		}
+		case 1: 
+		{
+			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
+		}
+		}
+		
 	}
 
 	this->rateAll();
 }
 
+Population::Population()
+{
+}
+
+
 Population::~Population()
 {
+}
+
+void Population::reset()
+{
+	this->specimens = vector<shared_ptr<Specimen>>(specimens.size());
+	this->ratings = list<vector<int>>(ratings.size());
+
+	for (int i = 0; i < specimens.size(); i++)
+	{
+		switch (specimenType)
+		{
+		case 0:
+		{
+			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));
+			break;
+		}
+		case 1:
+		{
+			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
+		}
+		}
+	}
+
+	this->rateAll();
 }
 
 int Population::getRating(int specimenNum)
@@ -30,7 +74,7 @@ void Population::rateAll()
 {
 	vector<int> newRatings = vector<int>(specimens.size());
 	for (size_t i = 0; i < this->specimens.size(); i++) {
-		newRatings[i] = specimens[i].rate();
+		newRatings[i] = specimens[i]->rate();
 	}
 	ratings.push_back(newRatings);
 }
@@ -64,7 +108,7 @@ float Population::averageGrade(vector<int>& ratings)
 	{
 		sum += ratings[i];
 	}
-	return sum / ratings.size();
+	return (float)sum / (float)ratings.size();
 }
 
 bool Population::perfected()
@@ -79,7 +123,7 @@ bool Population::perfected()
 	}
 }
 
-Specimen & Population::tourney(vector<int>& tourneyGroup)
+shared_ptr<Specimen> & Population::tourney(vector<int>& tourneyGroup)
 {
 	int best = tourneyGroup[0];
 	for (size_t i = 1; i < tourneyGroup.size(); i++)
@@ -94,10 +138,10 @@ Specimen & Population::tourney(vector<int>& tourneyGroup)
 
 Specimen & Population::randomSpec()
 {
-	return specimens[rand() % specimens.size()];
+	return *specimens[rand() % specimens.size()];
 }
 
-Specimen & Population::select(int tourneySize)
+shared_ptr<Specimen> & Population::select(int tourneySize)
 {
 	vector<int> tourneyGroup(tourneySize);
 	for (int i = 0; i < tourneySize; i++)
@@ -109,29 +153,22 @@ Specimen & Population::select(int tourneySize)
 
 void Population::crossing()
 {
-	vector<Specimen> newPop = vector<Specimen>(specimens.size());
-	Specimen *parent1, *parent2;
-	pair<Specimen*, Specimen*> children;
+	vector<shared_ptr<Specimen>> newPop = vector<shared_ptr<Specimen>>(specimens.size());
+	shared_ptr<Specimen> parent1, parent2;
 	int tourneySize = tourneyRatio * specimens.size();
+
+	vector<shared_ptr<Specimen>> children;
 
 	size_t i = 0;
 	while (i < specimens.size())
 	{
-		parent1 = &select(tourneySize);
-		parent2 = &select(tourneySize);
+		parent1 = select(tourneySize);
+		parent2 = select(tourneySize);
 
-		if (rand() % specimens.size() < crossingChance * specimens.size())
+		children = parent1->cross(parent2, crossingChance);
+		for (auto& child : children)
 		{
-			children = parent1->cross(*parent2);
-			newPop[i++] = *children.first;
-			newPop[i++] = *children.second;
-			delete children.first;
-			delete children.second;
-		}
-		else
-		{
-			newPop[i++] = Specimen(*parent1);
-			newPop[i++] = Specimen(*parent2);
+			newPop[i++] = child;
 		}
 	}
 	specimens = newPop;
@@ -146,7 +183,7 @@ void Population::generateNewPopulation()
 void Population::saveToFile()
 {
 	ofstream resultFile;
-	string filename = "results//" + graph.getName() + " CC#" + to_string(crossingChance) + " TR#" + to_string(tourneyRatio) + " MV#" + to_string(mutationValue) + ".csv";
+	string filename = "results//" + graph.getName() + " " + typeid(*specimens.front()).name() +  " CC#" + to_string(crossingChance) + " TR#" + to_string(tourneyRatio) + " MV#" + to_string(mutationValue) + ".csv";
 	resultFile.open(filename);
 	for (list<vector<int>>::iterator it = ratings.begin(); it != ratings.end(); it++)
 	{
@@ -172,7 +209,41 @@ Specimen & Population::getBest()
 			bestPos = i;
 		}
 	}
-	int test = specimens[bestPos].rate();
-	test = specimens[bestPos].rate();
-	return specimens[bestPos];
+	int test = specimens[bestPos]->rate();
+	return *specimens[bestPos];
+}
+
+Graph & Population::getGraph()
+{
+	return graph;
+}
+
+int Population::getSize()
+{
+	return specimens.size();
+}
+
+float Population::getMutationValue()
+{
+	return mutationValue;
+}
+
+float Population::getCrossingChance()
+{
+	return crossingChance;
+}
+
+float Population::getTourneyRatio()
+{
+	return tourneyRatio;
+}
+
+int Population::getErrorMultiplier()
+{
+	return errorMultiplier;
+}
+
+int Population::getColorMultiplier()
+{
+	return colorMultiplier;
 }

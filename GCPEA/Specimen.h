@@ -7,37 +7,37 @@
 #include <unordered_set>
 #include <numeric>
 #include <algorithm>
+#include <functional>
+#include <memory>
 
 using namespace std;
 
 class Specimen
 {
-private:
+protected:
 	vector<int> colors;
 	Graph* graph;
 	float mutationValue;
 
 	void randomizeGenes();
-	void mutate();
-	void mutate2();
+	virtual void mutate() = 0;
+	
 	bool isValidColored(int node);
-
-	vector<int> fillSurroundings(int mid, int range);
-	void fillValidColor(int color);
-	void fixAll();
-
+	int rateNode(int node);
 
 public:
 	Specimen(Graph* graph, float mutationValue);
-	Specimen(Specimen & parent1, Specimen & parent2);
-	Specimen(Specimen & other);
+	Specimen(Graph* graph, float mutationValue, vector<int> & colors);
 	Specimen();
 	~Specimen();
 
-	int rate();
-	pair<Specimen*, Specimen*>& cross(Specimen & other);
-
-	string toString();
+	virtual int rate() = 0;
+	virtual vector<shared_ptr<Specimen>> cross(shared_ptr<Specimen> & other, float chance) = 0;
 	
+	string toString();
+	vector<int>& getColors();
+
+	int getColorCount();
+	int getErrorCount();
 };
 
