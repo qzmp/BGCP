@@ -1,7 +1,5 @@
 #include "Tester.h"
 
-
-
 double Tester::countMean(vector<int> values)
 {
 	int sum = 0;
@@ -24,55 +22,95 @@ double Tester::countDeviation(vector<int> values, double mean)
 
 Tester::Tester()
 {
-	generations = pair<int, int>(10, 2000);
-	size = pair<int, int>(10, 200);
-	mutationValues = pair<double, double>(0, 0.3);
-	crossingChances = pair<double, double>(0, 1);
-	tourneyRatios = pair<double, double>(0.01, 0.2);
 }
-
-Tester::Tester(pair<int, int> generations, pair<int, int> size, pair<double, double> mutationValues, pair<double, double> crossingChances, pair<double, double> tourneyRatios)
-{
-	this->generations = generations;
-	this->size = size;
-	this->mutationValues = mutationValues;
-	this->crossingChances = crossingChances;
-	this->tourneyRatios = tourneyRatios;
-}
-
 
 Tester::~Tester()
 {
 }
 
-void Tester::setGenerationBounds(int min, int max, int step)
+void Tester::setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance)
 {
-	generations = pair<int, int>(min, max);
-	genStep = step;
+	this->generations = generations;
+	this->size = size;
+	this->filename = filename;
+	this->mutationValue = mutationValue;
+	this->tourneyRatio = tourneyRatio;
+	this->crossingChance = crossingChance;
 }
 
-void Tester::setSizeBounds(int min, int max, int step)
+void Tester::testCrossingChance()
 {
-	size = pair<int, int>(min, max);
-	sizeStep = step;
+	float crossingChanceMin = 0;
+	float crossingChanceMax = 1;
+	float crossingChanceStep = 0.05;
+
+	Population* testedPop = new Population();
+	for (float i = crossingChanceMin; i <= crossingChanceMax; i += crossingChanceStep)
+	{
+		testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, 1);
+		test(*testedPop, generations, testCount);
+		delete testedPop;
+	}
 }
 
-void Tester::setMutationBounds(double min, double max, double step)
+void Tester::testMutationValue()
 {
-	mutationValues = pair<double, double>(min, max);
-	mutStep = step;
+	float mutationChanceMin = 0;
+	float mutationChanceMax = 0.5;
+	float mutationChanceStep = 0.01;
+
+	Population* testedPop = new Population();
+	for (float i = mutationChanceMin; i <= mutationChanceMax; i += mutationChanceStep)
+	{
+		testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, 1);
+		test(*testedPop, generations, testCount);
+		delete testedPop;
+	}
 }
 
-void Tester::setCrossingBounds(double min, double max, double step)
+void Tester::testTourneyRatio()
 {
-	crossingChances = pair<double, double>(min, max);
-	crossStep = step;
+	float tourneyRatioMin = 0;
+	float tourneyRatioMax = 0.5;
+	float tourneyRatioStep = 0.05;
+
+	Population* testedPop = new Population();
+	for (float i = tourneyRatioMin; i <= tourneyRatioMax; i += tourneyRatioStep)
+	{
+		testedPop = new Population(size, filename, mutationValue, i, crossingChance, 1);
+		test(*testedPop, generations, testCount);
+		delete testedPop;
+	}
 }
 
-void Tester::setTourneyBounds(double min, double max, double step)
+void Tester::testPopSize()
 {
-	tourneyRatios = pair<double, double>(min, max);
-	tourneyStep = step;
+	int popSizeMin = 2;
+	int popSizeMax = 100;
+	int popSizeStep = 10;
+
+	Population* testedPop = new Population();
+	for (int i = popSizeMin; i <= popSizeMax; i += popSizeStep)
+	{
+		testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, 1);
+		test(*testedPop, generations, testCount);
+		delete testedPop;
+	}
+}
+
+void Tester::testGenerationCount()
+{
+	int genCountMin = 5;
+	int genCountMax = 1000;
+	int genCountStep = 100;
+
+	Population* testedPop = new Population();
+	for (int i = genCountMin; i <= genCountMax; i += genCountStep)
+	{
+		testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, 1);
+		test(*testedPop, i, testCount);
+		delete testedPop;
+	}
 }
 
 void Tester::testRatingFunction(int size, string filename, int maxGens, float mutationValue, float tourneyRatio, float crossingChance)
@@ -90,8 +128,8 @@ void Tester::testRatingFunction(int size, string filename, int maxGens, float mu
 	{
 		for (int j = errorCountMultiplierMin; j <= errorCountMultiplierMax; j += errorCountMultiplierStep)
 		{
-			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, 0);
-			test(*testedPop, maxGens, 10);
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, 1);
+			test(*testedPop, maxGens, testCount);
 		}
 		delete testedPop;
 	}
@@ -133,8 +171,6 @@ void Tester::save(Population & pop, int genSize, double avgColorCount, double co
 	resultFile.open(filename, ios::ate | ios::app);
 	string line = to_string(pop.getSize()) + ";" + to_string(genSize) + ";" + to_string(pop.getCrossingChance()) + ";" + to_string(pop.getMutationValue()) + ";" + to_string(pop.getTourneyRatio()) + ";";
 	resultFile << line;
-	resultFile << pop.getColorMultiplier() << ";";
-	resultFile << pop.getErrorMultiplier() << ";";
 	resultFile << avgColorCount << ";";
 	resultFile << colorDeviation << ";";
 	resultFile << avgErrorCount << ";";

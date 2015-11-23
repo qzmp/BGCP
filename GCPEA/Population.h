@@ -30,7 +30,9 @@ private:
 	int colorMultiplier;
 
 public:
-	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int errorMultiplier, int colorMultiplier, int specimenType);
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance,
+		int errorMultiplier, int colorMultiplier, int specimenType);
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int SpecimenType);
 	Population();
 	~Population();
 

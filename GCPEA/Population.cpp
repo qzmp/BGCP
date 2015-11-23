@@ -14,23 +14,31 @@ Population::Population(int size, string filename, float mutationValue, float tou
 
 	for (int i = 0; i < size; i++)
 	{
-		switch(specimenType)
-		{
-		case 0: 
-		{
-			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));
-			break;
-		}
-		case 1: 
-		{
-			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
-		}
-		}
-		
+		specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));		
 	}
 
 	this->rateAll();
 }
+
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int specimenType)
+{
+	this->specimens = vector<shared_ptr<Specimen>>(size);
+	this->graph = Graph(filename);
+	this->mutationValue = mutationValue;
+	this->tourneyRatio = tourneyRatio;
+	this->crossingChance = crossingChance;
+	this->errorMultiplier = errorMultiplier;
+	this->colorMultiplier = colorMultiplier;
+	this->specimenType = specimenType;
+
+	for (int i = 0; i < size; i++)
+	{
+		specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
+	}
+
+	this->rateAll();
+}
+
 
 Population::Population()
 {
@@ -143,6 +151,10 @@ Specimen & Population::randomSpec()
 
 shared_ptr<Specimen> & Population::select(int tourneySize)
 {
+	if (tourneySize == 0)
+	{
+		tourneySize++;
+	}
 	vector<int> tourneyGroup(tourneySize);
 	for (int i = 0; i < tourneySize; i++)
 	{
@@ -183,6 +195,7 @@ void Population::generateNewPopulation()
 void Population::saveToFile()
 {
 	ofstream resultFile;
+	resultFile.imbue(locale("fr"));
 	string filename = "results//" + graph.getName() + " " + typeid(*specimens.front()).name() +  " CC#" + to_string(crossingChance) + " TR#" + to_string(tourneyRatio) + " MV#" + to_string(mutationValue) + ".csv";
 	resultFile.open(filename);
 	for (list<vector<int>>::iterator it = ratings.begin(); it != ratings.end(); it++)
