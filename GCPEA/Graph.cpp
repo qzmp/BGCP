@@ -10,10 +10,9 @@ Graph::Graph(string filename)
 {
 	loadFromFile(filename);
 	duplicateNeighbours();
-	removeLoops();
+	//removeLoops();
 	this->name = filename;
 }
-
 
 Graph::~Graph()
 {
@@ -39,14 +38,19 @@ int Graph::loadFromFile(string filename)
 			if (next == "band") {
 				fileStream >> vertexCount;
 				edges = vector<list<pair<int, int>>>(vertexCount);
+				nodeWeights = vector<int>(vertexCount);
 				fileStream >> edgeCount;
 			}
-
 			if (next == "e") {
 				fileStream >> vertex1;
 				fileStream >> vertex2;
 				fileStream >> weight;			
 				edges[--vertex1].push_back(pair<int,int>(--vertex2, weight));
+			}
+			if (next == "n") {
+				fileStream >> vertex1;
+				fileStream >> weight;
+				nodeWeights[--vertex1] = weight;
 			}
 		}
 		fileStream.close();
@@ -63,7 +67,7 @@ void Graph::removeLoops()
 {
 	for (int i = 0; i < neighbours.size(); i++)
 	{
-		if (neighbours[i].front().first== i)
+		if (neighbours[i].front().first == i)
 		{
 			neighbours[i].erase(remove(neighbours[i].begin(), neighbours[i].end(), neighbours[i].front()), neighbours[i].end());
 		}
@@ -111,4 +115,9 @@ int Graph::getNodeCount()
 list<pair<int, int>>& Graph::getNeighbours(int firstNode)
 {
 	return neighbours[firstNode];
+}
+
+int Graph::getNodeWeight(int node)
+{
+	return nodeWeights[node];
 }

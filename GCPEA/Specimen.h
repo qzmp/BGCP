@@ -15,29 +15,33 @@ using namespace std;
 class Specimen
 {
 protected:
-	vector<int> colors;
+	vector<vector<int>> colors;
 	Graph* graph;
-	float mutationValue;
+	virtual void randomizeGenes();
 
-	void randomizeGenes();
+	bool isValidColored(int node, int colorPosition);
+
+	pair<int, int> getMinMaxColor();
+
+	float mutationValue;
 	virtual void mutate() = 0;
-	
-	bool isValidColored(int node);
-	int rateNode(int node);
+
+	bool multi;
 
 public:
-	Specimen(Graph* graph, float mutationValue);
-	Specimen(Graph* graph, float mutationValue, vector<int> & colors);
+	Specimen(Graph* graph, float mutationValue, bool multi);
+	Specimen(Graph* graph, float mutationValue, vector<vector<int>> colors, bool multi);
 	Specimen();
 	~Specimen();
 
 	virtual int rate() = 0;
 	virtual vector<shared_ptr<Specimen>> cross(shared_ptr<Specimen> & other, float chance) = 0;
 	
-	string toString();
-	vector<int>& getColors();
+	vector<vector<int>>& getColors();
 
 	int getColorCount();
 	int getErrorCount();
+
+	//string toString();
 };
 

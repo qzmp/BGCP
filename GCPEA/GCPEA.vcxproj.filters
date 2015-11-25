@@ -30,13 +30,13 @@
     <ClInclude Include="Specimen.h">
       <Filter>Header Files\Specimen</Filter>
     </ClInclude>
-    <ClInclude Include="PenaltyStrategySpecimen.h">
-      <Filter>Header Files\Specimen</Filter>
-    </ClInclude>
     <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LegalSpecimen.h">
+      <Filter>Header Files\Specimen</Filter>
+    </ClInclude>
+    <ClInclude Include="PenaltyStrategySpecimen.h">
       <Filter>Header Files\Specimen</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,10 +56,10 @@
     <ClCompile Include="Specimen.cpp">
       <Filter>Source Files\Specimen</Filter>
     </ClCompile>
-    <ClCompile Include="PenaltyStrategySpecimen.cpp">
+    <ClCompile Include="LegalSpecimen.cpp">
       <Filter>Source Files\Specimen</Filter>
     </ClCompile>
-    <ClCompile Include="LegalSpecimen.cpp">
+    <ClCompile Include="PenaltyStrategySpecimen.cpp">
       <Filter>Source Files\Specimen</Filter>
     </ClCompile>
   </ItemGroup>

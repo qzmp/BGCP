@@ -3,26 +3,22 @@
 void LegalSpecimen::mutate()
 {
 	for (size_t i = 0; i < colors.size(); i++) {
-		if (rand() % colors.size() < mutationValue * colors.size())
+		for (size_t j = 0; j < colors[i].size(); j++)
 		{
-			fillValidColor(i);
+			if (rand() % colors.size() < mutationValue * colors.size())
+			{
+				fillValidColor(i, j);
+			}
 		}
 	}
 }
 
-vector<int> LegalSpecimen::fillSurroundings(int mid, int range)
+void LegalSpecimen::fillValidColor(int node, int colorPosition)
 {
-	vector<int> result = vector<int>(1 + (2 * range));
-	iota(result.begin(), result.end(), mid - range);
-	return result;
-}
+	pair<int, int> minMaxColors = getMinMaxColor();
 
-void LegalSpecimen::fillValidColor(int node)
-{
-	auto& minMaxColors = minmax_element(colors.begin(), colors.end());
-
-	vector<int> availableColors = vector<int>(*minMaxColors.second - *minMaxColors.first);
-	iota(availableColors.begin(), availableColors.end(), *minMaxColors.first);
+	vector<int> availableColors = vector<int>(minMaxColors.second - minMaxColors.first);
+	iota(availableColors.begin(), availableColors.end(), minMaxColors.first);
 	random_shuffle(availableColors.begin(), availableColors.end());
 
 	bool colored = false;
@@ -31,8 +27,8 @@ void LegalSpecimen::fillValidColor(int node)
 	int i = 0;
 	while (!colored && i < availableColors.size())
 	{
-		colors[node] = availableColors[i];
-		if (isValidColored(node))
+		colors[node][colorPosition] = availableColors[i];
+		if (isValidColored(node, colorPosition))
 		{
 			colored = true;
 		}
@@ -40,11 +36,11 @@ void LegalSpecimen::fillValidColor(int node)
 	}
 	//}
 
-	int newMax = *minMaxColors.second + 1;
+	int newMax = minMaxColors.second + 1;
 	while (!colored)
 	{
-		colors[node] = newMax;
-		if (isValidColored(node))
+		colors[node][colorPosition] = newMax;
+		if (isValidColored(node, colorPosition))
 		{
 			colored = true;
 		}
@@ -56,23 +52,22 @@ void LegalSpecimen::fixAll()
 {
 	for (int i = 0; i < colors.size(); i++)
 	{
-		if (!isValidColored(i))
+		for (int j = 0; j < colors[i].size(); j++)
 		{
-			fillValidColor(i);
+			if (!isValidColored(i, j))
+			{
+				fillValidColor(i, j);
+			}
 		}
 	}
 }
 
-LegalSpecimen::LegalSpecimen()
-{
-}
-
-LegalSpecimen::LegalSpecimen(Graph * graph, float mutationValue) : Specimen(graph, mutationValue)
+LegalSpecimen::LegalSpecimen(Graph * graph, float mutationValue, bool multi) : Specimen(graph, mutationValue, multi)
 {
 	fixAll();
 }
 
-LegalSpecimen::LegalSpecimen(Graph * graph, float mutationValue, vector<int> & colors) : Specimen(graph, mutationValue, colors)
+LegalSpecimen::LegalSpecimen(Graph * graph, float mutationValue, vector<vector<int>> colors, bool multi) : Specimen(graph, mutationValue, colors, multi)
 {
 }
 
@@ -82,8 +77,6 @@ LegalSpecimen::~LegalSpecimen()
 
 int LegalSpecimen::rate()
 {
-	if(getErrorCount() > 0)
-		int test = getErrorCount();
 	return getColorCount();
 }
 
@@ -96,8 +89,8 @@ vector<shared_ptr<Specimen>> LegalSpecimen::cross(shared_ptr<Specimen>& other, f
 
 	if ((double)rand() / RAND_MAX < chance)
 	{
-		auto& firstChildColors = vector<int>(graph->getNodeCount());
-		auto& secondChildColors = vector<int>(graph->getNodeCount());
+		auto& firstChildColors = vector<vector<int>>(graph->getNodeCount());
+		auto& secondChildColors = vector<vector<int>>(graph->getNodeCount());
 
 		auto& parent2Colors = other->getColors();
 
@@ -113,13 +106,13 @@ vector<shared_ptr<Specimen>> LegalSpecimen::cross(shared_ptr<Specimen>& other, f
 			secondChildColors[i] = this->colors[i];
 		}
 
-		child1 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, firstChildColors));
-		child2 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, secondChildColors));
+		child1 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, firstChildColors, multi));
+		child2 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, secondChildColors, multi));
 	}
 	else
 	{
-		child1 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, colors));
-		child2 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, other->getColors()));
+		child1 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, colors, multi));
+		child2 = shared_ptr<LegalSpecimen>(new LegalSpecimen(graph, mutationValue, other->getColors(), multi));
 	}
 
 	child1->fixAll();

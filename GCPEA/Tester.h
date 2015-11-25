@@ -12,16 +12,21 @@ private:
 	float tourneyRatio;
 	float crossingChance;
 
+	bool multi;
+
 	int testCount = 10;
 
 	double countMean(vector<int> values);
 	double countDeviation(vector<int> values, double mean);
 
+
 public:
 	Tester();
 	~Tester();
 
-	void setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance);
+	void setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, bool multi);
+
+	void testParameter(int which, float min, float max, float step);
 
 	void testCrossingChance();
 	void testTourneyRatio();

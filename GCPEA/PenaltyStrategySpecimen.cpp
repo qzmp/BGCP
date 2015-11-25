@@ -4,25 +4,25 @@
 void PenaltyStrategySpecimen::mutate()
 {
 	for (size_t i = 0; i < colors.size(); i++) {
-		if (rand() % colors.size() < mutationValue * colors.size())
+		for (size_t j = 0; j < colors[i].size(); j++)
 		{
-			colors[i] = rand() % (graph->getNodeCount());
+			if (rand() % colors.size() < mutationValue * colors.size())
+			{
+				colors[i][j] = rand() % (60);
+			}
 		}
 	}
 }
 
-PenaltyStrategySpecimen::PenaltyStrategySpecimen()
-{
-}
-
-PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier) 
-	: Specimen(graph, mutationValue)
+PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier, bool multi) 
+	: Specimen(graph, mutationValue, multi)
 {
 	this->errorMultiplier = errorMultiplier;
 	this->colorMultiplier = colorMultiplier;
 }
 
-PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier, vector<int> & colors) : Specimen(graph, mutationValue, colors)
+PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier, 
+	vector<vector<int>> colors, bool multi) : Specimen(graph, mutationValue, colors, multi)
 {
 	this->errorMultiplier = errorMultiplier;
 	this->colorMultiplier = colorMultiplier;
@@ -37,10 +37,11 @@ vector<shared_ptr<Specimen>> PenaltyStrategySpecimen::cross(shared_ptr<Specimen>
 	vector<shared_ptr<Specimen>> children(2);
 
 	shared_ptr<PenaltyStrategySpecimen> child1, child2;
+
 	if ((double)rand() / RAND_MAX < chance)
 	{
-		auto& firstChildColors = vector<int>(graph->getNodeCount());
-		auto& secondChildColors = vector<int>(graph->getNodeCount());
+		auto& firstChildColors = vector<vector<int>>(graph->getNodeCount());
+		auto& secondChildColors = vector<vector<int>>(graph->getNodeCount());
 
 		auto& parent2Colors = other->getColors();
 
@@ -56,20 +57,19 @@ vector<shared_ptr<Specimen>> PenaltyStrategySpecimen::cross(shared_ptr<Specimen>
 			secondChildColors[i] = this->colors[i];
 		}
 
-		child1 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, firstChildColors));
-		child2 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, secondChildColors));
+		child1 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, firstChildColors, multi));
+		child2 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, secondChildColors, multi));
 	}
 	else
 	{
-		child1 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, colors));
-		child2 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, other->getColors()));
+		child1 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, colors, multi));
+		child2 = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(graph, mutationValue, errorMultiplier, colorMultiplier, other->getColors(), multi));
 	}
-
 	child1->mutate();
 	child2->mutate();
 	children[0] = child1;
 	children[1] = child2;
-	
+
 	return children;
 }
 

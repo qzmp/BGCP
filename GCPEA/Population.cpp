@@ -1,7 +1,7 @@
 #include "Population.h"
 
 Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance,
-	int errorMultiplier, int colorMultiplier, int specimenType)
+	int errorMultiplier, int colorMultiplier, int specimenType, bool multi)
 {
 	this->specimens = vector<shared_ptr<Specimen>>(size);
 	this->graph = Graph(filename);
@@ -12,15 +12,17 @@ Population::Population(int size, string filename, float mutationValue, float tou
 	this->colorMultiplier = colorMultiplier;
 	this->specimenType = specimenType;
 
+	this->multi = multi;
+
 	for (int i = 0; i < size; i++)
 	{
-		specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));		
+		specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier, multi));		
 	}
 
 	this->rateAll();
 }
 
-Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int specimenType)
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int specimenType, bool multi)
 {
 	this->specimens = vector<shared_ptr<Specimen>>(size);
 	this->graph = Graph(filename);
@@ -31,9 +33,10 @@ Population::Population(int size, string filename, float mutationValue, float tou
 	this->colorMultiplier = colorMultiplier;
 	this->specimenType = specimenType;
 
+	this->multi = multi;
 	for (int i = 0; i < size; i++)
 	{
-		specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
+		specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue, multi));
 	}
 
 	this->rateAll();
@@ -60,12 +63,12 @@ void Population::reset()
 		{
 		case 0:
 		{
-			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier));
+			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier, multi));
 			break;
 		}
 		case 1:
 		{
-			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue));
+			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue, multi));
 		}
 		}
 	}

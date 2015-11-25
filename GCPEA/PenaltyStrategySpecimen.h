@@ -2,8 +2,6 @@
 
 #include "Specimen.h"
 
-using namespace std;
-
 class PenaltyStrategySpecimen : public Specimen
 {
 private:
@@ -13,9 +11,8 @@ private:
 	void mutate();
 	
 public:
-	PenaltyStrategySpecimen();
-	PenaltyStrategySpecimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier);
-	PenaltyStrategySpecimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier, vector<int> & colors);
+	PenaltyStrategySpecimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier, bool multi);
+	PenaltyStrategySpecimen(Graph* graph, float mutationValue, int errorMultiplier, int colorMultiplier, vector<vector<int>> colors, bool multi);
 	~PenaltyStrategySpecimen();
 
 	int rate();

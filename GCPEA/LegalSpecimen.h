@@ -8,14 +8,12 @@ private:
 
 	void mutate();
 
-	vector<int> fillSurroundings(int mid, int range);
-	void fillValidColor(int node);
+	void fillValidColor(int node, int colorPosition);
 	void fixAll();
 
 public:
-	LegalSpecimen();
-	LegalSpecimen(Graph* graph, float mutationValue);
-	LegalSpecimen(Graph* graph, float mutationValue, vector<int> & colors);
+	LegalSpecimen(Graph* graph, float mutationValue, bool multi);
+	LegalSpecimen(Graph* graph, float mutationValue, vector<vector<int>> colors, bool multi);
 	~LegalSpecimen();
 
 	int rate();

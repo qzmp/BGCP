@@ -12,6 +12,7 @@ class Graph
 {
 private:
 	vector<list<pair<int, int>>> neighbours;
+	vector<int> nodeWeights;
 	string name;
 
 	void removeLoops();
@@ -29,5 +30,6 @@ public:
 
 	int getNodeCount();
 	list<pair<int, int>>& getNeighbours(int firstNode);
+	int getNodeWeight(int node);
 };
 

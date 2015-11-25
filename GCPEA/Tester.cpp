@@ -28,7 +28,7 @@ Tester::~Tester()
 {
 }
 
-void Tester::setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance)
+void Tester::setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, bool multi)
 {
 	this->generations = generations;
 	this->size = size;
@@ -36,6 +36,7 @@ void Tester::setStartingParams(int generations, int size, string filename, float
 	this->mutationValue = mutationValue;
 	this->tourneyRatio = tourneyRatio;
 	this->crossingChance = crossingChance;
+	this->multi = multi;
 }
 
 void Tester::testCrossingChance()
@@ -47,7 +48,7 @@ void Tester::testCrossingChance()
 	Population* testedPop = new Population();
 	for (float i = crossingChanceMin; i <= crossingChanceMax; i += crossingChanceStep)
 	{
-		testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, 1);
+		testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, 1, multi);
 		test(*testedPop, generations, testCount);
 		delete testedPop;
 	}
@@ -62,7 +63,7 @@ void Tester::testMutationValue()
 	Population* testedPop = new Population();
 	for (float i = mutationChanceMin; i <= mutationChanceMax; i += mutationChanceStep)
 	{
-		testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, 1);
+		testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, 1, multi);
 		test(*testedPop, generations, testCount);
 		delete testedPop;
 	}
@@ -77,7 +78,7 @@ void Tester::testTourneyRatio()
 	Population* testedPop = new Population();
 	for (float i = tourneyRatioMin; i <= tourneyRatioMax; i += tourneyRatioStep)
 	{
-		testedPop = new Population(size, filename, mutationValue, i, crossingChance, 1);
+		testedPop = new Population(size, filename, mutationValue, i, crossingChance, 1, multi);
 		test(*testedPop, generations, testCount);
 		delete testedPop;
 	}
@@ -92,7 +93,7 @@ void Tester::testPopSize()
 	Population* testedPop = new Population();
 	for (int i = popSizeMin; i <= popSizeMax; i += popSizeStep)
 	{
-		testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, 1);
+		testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, 1, multi);
 		test(*testedPop, generations, testCount);
 		delete testedPop;
 	}
@@ -107,7 +108,7 @@ void Tester::testGenerationCount()
 	Population* testedPop = new Population();
 	for (int i = genCountMin; i <= genCountMax; i += genCountStep)
 	{
-		testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, 1);
+		testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, 1, multi);
 		test(*testedPop, i, testCount);
 		delete testedPop;
 	}
@@ -128,7 +129,7 @@ void Tester::testRatingFunction(int size, string filename, int maxGens, float mu
 	{
 		for (int j = errorCountMultiplierMin; j <= errorCountMultiplierMax; j += errorCountMultiplierStep)
 		{
-			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, 1);
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, 1, multi);
 			test(*testedPop, maxGens, testCount);
 		}
 		delete testedPop;
