@@ -17,7 +17,7 @@ class Specimen
 protected:
 	vector<vector<int>> colors;
 	Graph* graph;
-	virtual void randomizeGenes();
+	virtual void randomizeGenes(int colorCount);
 
 	bool isValidColored(int node, int colorPosition);
 

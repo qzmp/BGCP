@@ -27,8 +27,6 @@ Specimen::Specimen(Graph * graph, float mutationValue, bool multi)
 			colors[i] = vector<int>(1);
 		}
 	}
-
-	randomizeGenes();
 }
 
 Specimen::Specimen(Graph * graph, float mutationValue, vector<vector<int>> colors, bool multi)
@@ -47,13 +45,13 @@ Specimen::~Specimen()
 {
 }
 
-void Specimen::randomizeGenes()
+void Specimen::randomizeGenes(int colorCount)
 {
 	for (int i = 0; i < graph->getNodeCount(); i++)
 	{
 		for (int j = 0; j < colors[i].size(); j++)
 		{
-			colors[i][j] = (rand() % 20);
+			colors[i][j] = (rand() % colorCount);
 		}
 	}
 }

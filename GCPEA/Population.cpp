@@ -1,7 +1,7 @@
 #include "Population.h"
 
 Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance,
-	int errorMultiplier, int colorMultiplier, int specimenType, bool multi)
+	int errorMultiplier, int colorMultiplier, bool multi)
 {
 	this->specimens = vector<shared_ptr<Specimen>>(size);
 	this->graph = Graph(filename);
@@ -10,7 +10,7 @@ Population::Population(int size, string filename, float mutationValue, float tou
 	this->crossingChance = crossingChance;
 	this->errorMultiplier = errorMultiplier;
 	this->colorMultiplier = colorMultiplier;
-	this->specimenType = specimenType;
+	this->specimenType = SpecimenType::Penalty;
 
 	this->multi = multi;
 
@@ -22,16 +22,14 @@ Population::Population(int size, string filename, float mutationValue, float tou
 	this->rateAll();
 }
 
-Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int specimenType, bool multi)
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, bool multi)
 {
 	this->specimens = vector<shared_ptr<Specimen>>(size);
 	this->graph = Graph(filename);
 	this->mutationValue = mutationValue;
 	this->tourneyRatio = tourneyRatio;
 	this->crossingChance = crossingChance;
-	this->errorMultiplier = errorMultiplier;
-	this->colorMultiplier = colorMultiplier;
-	this->specimenType = specimenType;
+	this->specimenType = SpecimenType::Legal;
 
 	this->multi = multi;
 	for (int i = 0; i < size; i++)
@@ -42,11 +40,25 @@ Population::Population(int size, string filename, float mutationValue, float tou
 	this->rateAll();
 }
 
-
-Population::Population()
+Population::Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int colorCount, bool multi)
 {
-}
+	this->specimens = vector<shared_ptr<Specimen>>(size);
+	this->graph = Graph(filename);
+	this->mutationValue = mutationValue;
+	this->tourneyRatio = tourneyRatio;
+	this->crossingChance = crossingChance;
+	this->colorCount = colorCount;
 
+	this->specimenType = SpecimenType::SetColor;
+
+	this->multi = multi;
+	for (int i = 0; i < size; i++)
+	{
+		specimens[i] = shared_ptr<SetColorSpecimen>(new SetColorSpecimen(&graph, mutationValue, multi, colorCount));
+	}
+
+	this->rateAll();
+}
 
 Population::~Population()
 {
@@ -61,14 +73,18 @@ void Population::reset()
 	{
 		switch (specimenType)
 		{
-		case 0:
+		case Penalty:
 		{
 			specimens[i] = shared_ptr<PenaltyStrategySpecimen>(new PenaltyStrategySpecimen(&graph, mutationValue, errorMultiplier, colorMultiplier, multi));
 			break;
 		}
-		case 1:
+		case Legal:
 		{
 			specimens[i] = shared_ptr<LegalSpecimen>(new LegalSpecimen(&graph, mutationValue, multi));
+		}
+		case SetColor:
+		{
+			specimens[i] = shared_ptr<SetColorSpecimen>(new SetColorSpecimen(&graph, mutationValue, multi, colorCount));
 		}
 		}
 	}

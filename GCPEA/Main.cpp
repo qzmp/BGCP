@@ -1,9 +1,19 @@
 #include "Tester.h"
 #include <iostream>
 
+const string SPECIMEN_TYPES = "1. Legal BCP\n2. Legal BMCP\n3. Penalty BCP\n4. Penalty BMCP\n5. SetColor BCP\n6. SetColor BMCP\n";
+
 int main()
 {
 	srand(time(NULL));
+
+	char key = '0';
+	while (key != 'q')
+	{
+		cout << SPECIMEN_TYPES;
+		cout <<
+	}
+	
 	
 	clock_t beginTime = clock();
 	int maxPops = 100;

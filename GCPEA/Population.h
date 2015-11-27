@@ -3,7 +3,14 @@
 #include "Graph.h"
 #include "PenaltyStrategySpecimen.h"
 #include "LegalSpecimen.h"
+#include "SetColorSpecimen.h"
 #include <memory>
+
+enum SpecimenType {
+	Penalty,
+	Legal,
+	SetColor
+};
 
 class Population
 {
@@ -16,7 +23,7 @@ private:
 	float tourneyRatio;
 	float crossingChance;
 
-	int specimenType;
+	SpecimenType specimenType;
 
 	shared_ptr<Specimen> & tourney(vector<int>& tourneyGroup);
 
@@ -29,12 +36,14 @@ private:
 	int errorMultiplier;
 	int colorMultiplier;
 
+	int colorCount;
+
 	bool multi;
 public:
 	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance,
-		int errorMultiplier, int colorMultiplier, int specimenType, bool multi);
-	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int SpecimenType, bool multi);
-	Population();
+		int errorMultiplier, int colorMultiplier, bool multi);
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, bool multi);
+	Population(int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int colorCount, bool multi);
 	~Population();
 
 	void reset();

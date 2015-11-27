@@ -39,6 +39,9 @@
     <ClInclude Include="PenaltyStrategySpecimen.h">
       <Filter>Header Files\Specimen</Filter>
     </ClInclude>
+    <ClInclude Include="SetColorSpecimen.h">
+      <Filter>Header Files\Specimen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graph.cpp">
@@ -62,5 +65,12 @@
     <ClCompile Include="PenaltyStrategySpecimen.cpp">
       <Filter>Source Files\Specimen</Filter>
     </ClCompile>
+    <ClCompile Include="SetColorSpecimen.cpp">
+      <Filter>Source Files\Specimen</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

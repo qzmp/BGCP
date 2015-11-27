@@ -122,8 +122,10 @@
     <ClInclude Include="LegalSpecimen.h" />
     <ClInclude Include="PenaltyStrategySpecimen.h" />
     <ClInclude Include="Population.h" />
+    <ClInclude Include="SetColorSpecimen.h" />
     <ClInclude Include="Specimen.h" />
     <ClInclude Include="Tester.h" />
+    <ClInclude Include="UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graph.cpp" />
@@ -131,8 +133,14 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PenaltyStrategySpecimen.cpp" />
     <ClCompile Include="Population.cpp" />
+    <ClCompile Include="SetColorSpecimen.cpp" />
     <ClCompile Include="Specimen.cpp" />
     <ClCompile Include="Tester.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

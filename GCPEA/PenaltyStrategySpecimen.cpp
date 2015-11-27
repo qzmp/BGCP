@@ -19,6 +19,8 @@ PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationVa
 {
 	this->errorMultiplier = errorMultiplier;
 	this->colorMultiplier = colorMultiplier;
+	randomizeGenes(100);
+	//TODO : pick better number
 }
 
 PenaltyStrategySpecimen::PenaltyStrategySpecimen(Graph * graph, float mutationValue, int errorMultiplier, int colorMultiplier, 

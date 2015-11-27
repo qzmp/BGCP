@@ -64,6 +64,7 @@ void LegalSpecimen::fixAll()
 
 LegalSpecimen::LegalSpecimen(Graph * graph, float mutationValue, bool multi) : Specimen(graph, mutationValue, multi)
 {
+	randomizeGenes(colors.size());
 	fixAll();
 }
 

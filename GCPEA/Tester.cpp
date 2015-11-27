@@ -20,6 +20,110 @@ double Tester::countDeviation(vector<int> values, double mean)
 	return sqrt(sum / (double)values.size());
 }
 
+void Tester::testValid(int which, float min, float max, float step)
+{
+	Population* testedPop;
+	for (float i = min; i <= max; i += step)
+	{
+		switch (which)
+		{
+		case 1:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, multi);
+			test(*testedPop, i, testCount);
+			break;
+		case 2:
+			testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 3:
+			testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 4:
+			testedPop = new Population(size, filename, mutationValue, i, crossingChance, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 5:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		}
+	}
+}
+
+void Tester::testPenalty(int which, float min, float max, float step)
+{
+	Population* testedPop;
+	for (float i = min; i <= max; i += step)
+	{
+		switch (which)
+		{
+		case 1:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, colorMultiplier, errorMultiplier, multi);
+			test(*testedPop, i, testCount);
+			break;
+		case 2:
+			testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, colorMultiplier, errorMultiplier, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 3:
+			testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, colorMultiplier, errorMultiplier, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 4:
+			testedPop = new Population(size, filename, mutationValue, i, crossingChance, colorMultiplier, errorMultiplier, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 5:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, colorMultiplier, errorMultiplier, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 6:
+			for (int j = min; j <= max; j++)
+			{
+				testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, j, multi);
+				test(*testedPop, generations, testCount);
+			}
+			break;
+		}
+	}
+}
+
+void Tester::testSetColor(int which, float min, float max, float step)
+{
+	Population* testedPop;
+	for (float i = min; i <= max; i += step)
+	{
+		switch (which)
+		{
+		case 1:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, colorCount, multi);
+			test(*testedPop, i, testCount);
+			break;
+		case 2:
+			testedPop = new Population(i, filename, mutationValue, tourneyRatio, crossingChance, colorCount, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 3:
+			testedPop = new Population(size, filename, i, tourneyRatio, crossingChance, colorCount, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 4:
+			testedPop = new Population(size, filename, mutationValue, i, crossingChance, colorCount, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 5:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, i, colorCount, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		case 6:
+			testedPop = new Population(size, filename, mutationValue, tourneyRatio, crossingChance, i, multi);
+			test(*testedPop, generations, testCount);
+			break;
+		}
+	}
+}
+
 Tester::Tester()
 {
 }
@@ -37,6 +141,41 @@ void Tester::setStartingParams(int generations, int size, string filename, float
 	this->tourneyRatio = tourneyRatio;
 	this->crossingChance = crossingChance;
 	this->multi = multi;
+	this->specimenType = Legal;
+}
+
+void Tester::setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, 
+	int colorMultiplier, int errorMultiplier, bool multi)
+{
+	this->generations = generations;
+	this->size = size;
+	this->filename = filename;
+	this->mutationValue = mutationValue;
+	this->tourneyRatio = tourneyRatio;
+	this->crossingChance = crossingChance;
+	this->colorMultiplier = colorMultiplier;
+	this->errorMultiplier = errorMultiplier;
+	this->multi = multi;
+	this->specimenType = Penalty;
+}
+
+void Tester::setStartingParams(int generations, int size, string filename, float mutationValue, float tourneyRatio, float crossingChance, int colorCount, bool multi)
+{
+	this->generations = generations;
+	this->size = size;
+	this->filename = filename;
+	this->mutationValue = mutationValue;
+	this->tourneyRatio = tourneyRatio;
+	this->crossingChance = crossingChance;
+	this->colorCount = colorCount;
+	this->multi = multi;
+	this->specimenType = SetColor;
+}
+
+void Tester::testParameter(int which, float min, float max, float step)
+{
+	
+	
 }
 
 void Tester::testCrossingChance()
